@@ -52,7 +52,7 @@ export async function pairCreatedEvents() {
 
   let startBlock = 10000835;
   let paging = 500000;
-  let page = 4;
+  let page = 0;
 
   let events = await comptroller.queryFilter(
     eventFilter,
@@ -96,7 +96,7 @@ async function getTokenSymbol(_token: string): Promise<string> {
   return symbol;
 }
 
-DB_QUEE.process(450, async (job: any, done: any) => {
+DB_QUEE.process(200, async (job: any, done: any) => {
   //   console.log(job.data);
   //   console.log("------------------------");
   // let { pair } = job.data;
@@ -105,9 +105,12 @@ DB_QUEE.process(450, async (job: any, done: any) => {
   // await storePair(EXCHNAGE_NAME, token0.id, token1.id, token0.symbol, token1.symbol, pairAddress);
 
   const { token0, token1, pair } = job.data;
-  let token0Symbol = await getTokenSymbol(token0);
-  let token1Symbol = await getTokenSymbol(token1);
-  await storePair(EXCHNAGE_NAME, token0, token1, token0Symbol, token1Symbol, pair);
+  console.log(token0, token1, pair);
+  console.log("---------------------");
+
+  // let token0Symbol = await getTokenSymbol(token0);
+  // let token1Symbol = await getTokenSymbol(token1);
+  // await storePair(EXCHNAGE_NAME, token0, token1, token0Symbol, token1Symbol, pair);
 
   done(null, job);
 });
