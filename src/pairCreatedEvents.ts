@@ -6,7 +6,6 @@ import { getV2Pairs } from "./graph/uniswapv2grap";
 import { storePair } from "./db";
 import * as _ from "lodash";
 import Queue from "bull";
-
 const DB_QUEE = new Queue("db");
 
 const RPC_HOST = process.env.RPC_HTTP || "";
@@ -21,8 +20,8 @@ const provider = new ethers.providers.JsonRpcProvider(RPC_HOST);
 (async () => {
   console.log("RPC : ", RPC_HOST);
   // console.log("Ethers: ", utils.toUtf8String("0x4156540000000000000000000000000000000000000000000000000000000000"));
-  // await pairCreatedEvents();
-  await getpairsViaGraph();
+  await pairCreatedEvents();
+  // await getpairsViaGraph();
 })();
 
 export async function getpairsViaGraph() {
@@ -97,19 +96,18 @@ async function getTokenSymbol(_token: string): Promise<string> {
   return symbol;
 }
 
-DB_QUEE.process(200, async (job: any, done: any) => {
+DB_QUEE.process(450, async (job: any, done: any) => {
   //   console.log(job.data);
   //   console.log("------------------------");
-  let { pair } = job.data;
-  let { id: pairAddress } = pair;
-  let { token0, token1 } = pair;
+  // let { pair } = job.data;
+  // let { id: pairAddress } = pair;
+  // let { token0, token1 } = pair;
+  // await storePair(EXCHNAGE_NAME, token0.id, token1.id, token0.symbol, token1.symbol, pairAddress);
 
-  await storePair(EXCHNAGE_NAME, token0.id, token1.id, token0.symbol, token1.symbol, pairAddress);
-
-  //   const { token0, token1, pair } = job.data;
-  //   let token0Symbol = await getTokenSymbol(token0);
-  //   let token1Symbol = await getTokenSymbol(token1);
-  //   await storePair(EXCHNAGE_NAME, token0, token1, token0Symbol, token1Symbol, pair);
+  const { token0, token1, pair } = job.data;
+  let token0Symbol = await getTokenSymbol(token0);
+  let token1Symbol = await getTokenSymbol(token1);
+  await storePair(EXCHNAGE_NAME, token0, token1, token0Symbol, token1Symbol, pair);
 
   done(null, job);
 });
