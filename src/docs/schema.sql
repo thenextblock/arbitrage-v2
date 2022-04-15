@@ -7,7 +7,8 @@ CREATE TABLE pairs
     token1 varchar(43),    
     token0_symbol varchar(50),
     token1_symbol varchar(50),
-    pair varchar(43)
+    pair varchar(43),
+    fee integer
 );
 
 alter table pairs owner to postgres;

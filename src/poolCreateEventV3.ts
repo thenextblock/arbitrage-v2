@@ -1,7 +1,7 @@
 require("dotenv").config();
 import { utils, ethers, BigNumber, Signer } from "ethers";
-import { formatUnits, parseUnits } from "ethers/lib/utils";
-import { UniswapV2FactoryAbi__factory, ERC20Abi__factory } from "./types";
+import { formatUnits, parseUnits, poll } from "ethers/lib/utils";
+import { UniswapV3FactoryAbi__factory, ERC20Abi__factory } from "./types";
 import { getV2Pairs } from "./graph/uniswapv2grap";
 import { storePair } from "./db";
 import * as _ from "lodash";
@@ -19,8 +19,8 @@ const DB_QUEE = new Queue("db");
 const RPC_HOST = process.env.RPC_HTTP || "";
 // const RPC_WS = process.env.RPC_WS || "";
 
-const EXCHNAGE_NAME = "Uniswap_V2";
-const UNISWAP_V2_FACTORY_ADDRESS = "0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f"; // uniswap v2
+const EXCHNAGE_NAME = "Uniswap_V3";
+const UNISWAP_V2_FACTORY_ADDRESS = "0x1f98431c8ad98523631ae4a59f267346ea31f984"; // uniswap v3 factory address
 
 const provider = new ethers.providers.JsonRpcProvider(RPC_HOST);
 // const wsProvider = new ethers.providers.WebSocketProvider(RPC_WS);
@@ -49,7 +49,6 @@ let QUEE_CONCURRENCY = 500;
   console.log("-".repeat(80).gray);
 
   await queeMonitor(DB_QUEE);
-  // console.log("Ethers: ", utils.toUtf8String("0x4156540000000000000000000000000000000000000000000000000000000000"));
   await pairCreatedEvents(from, size, page - 1);
 })();
 
@@ -75,11 +74,11 @@ export async function getpairsViaGraph() {
 }
 
 export async function pairCreatedEvents(_startBlock: number, _size: number, _page: number) {
-  console.log("PAIR CREATED EVENTS ... ");
-  const uniswapFactory = UniswapV2FactoryAbi__factory.connect(UNISWAP_V2_FACTORY_ADDRESS, provider);
-  let eventFilter = uniswapFactory.filters.PairCreated();
+  console.log("POOL CREATED EVENTS ... ");
+  const uniswapFactory = UniswapV3FactoryAbi__factory.connect(UNISWAP_V2_FACTORY_ADDRESS, provider);
+  let eventFilter = uniswapFactory.filters.PoolCreated();
 
-  //TODO : Optimize this shitty Code here
+  // TODO : Optimize this shitty Code here
   let startBlock = _startBlock;
   let paging = _size;
   let page = _page;
@@ -96,8 +95,8 @@ export async function pairCreatedEvents(_startBlock: number, _size: number, _pag
   console.log("All Events : ", events.length);
 
   events.map((event: any) => {
-    let { token0, token1, pair } = event.args;
-    DB_QUEE.add({ token0, token1, pair });
+    let { token0, token1, fee, tickSpacing, pool } = event.args;
+    DB_QUEE.add({ token0: token0, token1: token1, fee: fee, tickSpacing: tickSpacing, pool: pool });
   });
 }
 
@@ -113,20 +112,12 @@ async function getTokenSymbol(_token: string): Promise<string> {
 }
 
 DB_QUEE.process(QUEE_CONCURRENCY, async (job: any, done: any) => {
-  //   console.log(job.data);
-  //   console.log("------------------------");
-  // let { pair } = job.data;
-  // let { id: pairAddress } = pair;
-  // let { token0, token1 } = pair;
-  // await storePair(EXCHNAGE_NAME, token0.id, token1.id, token0.symbol, token1.symbol, pairAddress);
-
-  const { token0, token1, pair } = job.data;
-  console.log(token0, token1, pair);
-  console.log("---------------------");
+  // emit PoolCreated(token0, token1, fee, tickSpacing, pool);
+  let { token0, token1, fee, tickSpacing, pool } = job.data;
 
   let token0Symbol = await getTokenSymbol(token0);
   let token1Symbol = await getTokenSymbol(token1);
-  await storePair(EXCHNAGE_NAME, token0, token1, token0Symbol, token1Symbol, pair);
+  await storePair(EXCHNAGE_NAME, token0, token1, token0Symbol, token1Symbol, pool);
 
   done(null, job);
 });

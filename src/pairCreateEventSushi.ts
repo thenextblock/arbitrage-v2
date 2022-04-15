@@ -10,7 +10,7 @@ import args from "args";
 import "colors";
 
 args
-  .option("from", "Starting Block")
+  .option("from", "Starting Block", 10794229)
   .option("size", "paging size", 500000)
   .option("page", "page", 0)
   .option("concurency", "how many paralelt Procces you need", 488);
@@ -19,8 +19,8 @@ const DB_QUEE = new Queue("db");
 const RPC_HOST = process.env.RPC_HTTP || "";
 // const RPC_WS = process.env.RPC_WS || "";
 
-const EXCHNAGE_NAME = "Uniswap_V2";
-const UNISWAP_V2_FACTORY_ADDRESS = "0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f"; // uniswap v2
+const EXCHNAGE_NAME = "SushiSwap";
+const UNISWAP_V2_FACTORY_ADDRESS = "0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac"; // uniswap v2
 
 const provider = new ethers.providers.JsonRpcProvider(RPC_HOST);
 // const wsProvider = new ethers.providers.WebSocketProvider(RPC_WS);
@@ -113,13 +113,6 @@ async function getTokenSymbol(_token: string): Promise<string> {
 }
 
 DB_QUEE.process(QUEE_CONCURRENCY, async (job: any, done: any) => {
-  //   console.log(job.data);
-  //   console.log("------------------------");
-  // let { pair } = job.data;
-  // let { id: pairAddress } = pair;
-  // let { token0, token1 } = pair;
-  // await storePair(EXCHNAGE_NAME, token0.id, token1.id, token0.symbol, token1.symbol, pairAddress);
-
   const { token0, token1, pair } = job.data;
   console.log(token0, token1, pair);
   console.log("---------------------");
