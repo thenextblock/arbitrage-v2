@@ -12,3 +12,12 @@ CREATE TABLE pairs
 );
 
 alter table pairs owner to postgres;
+
+
+
+-- alter table pairs
+-- 	add uniswap_v2 varchar(43) default '0x0000000000000000000000000000000000000000';
+
+-- alter table pairs
+-- 	add sushiswap_v2 varchar(43) default '0x0000000000000000000000000000000000000000'::character varying;
+

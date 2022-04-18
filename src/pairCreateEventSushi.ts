@@ -119,7 +119,7 @@ DB_QUEE.process(QUEE_CONCURRENCY, async (job: any, done: any) => {
 
   let token0Symbol = await getTokenSymbol(token0);
   let token1Symbol = await getTokenSymbol(token1);
-  await storePair(EXCHNAGE_NAME, token0, token1, token0Symbol, token1Symbol, pair);
+  await storePair(EXCHNAGE_NAME, token0, token1, token0Symbol, token1Symbol, pair, 3000);
 
   done(null, job);
 });

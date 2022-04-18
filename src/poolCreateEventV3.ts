@@ -21,7 +21,6 @@ const RPC_HOST = process.env.RPC_HTTP || "";
 
 const EXCHNAGE_NAME = "Uniswap_V3";
 const UNISWAP_V2_FACTORY_ADDRESS = "0x1f98431c8ad98523631ae4a59f267346ea31f984"; // uniswap v3 factory address
-
 const provider = new ethers.providers.JsonRpcProvider(RPC_HOST);
 // const wsProvider = new ethers.providers.WebSocketProvider(RPC_WS);
 
@@ -51,27 +50,6 @@ let QUEE_CONCURRENCY = 500;
   await queeMonitor(DB_QUEE);
   await pairCreatedEvents(from, size, page - 1);
 })();
-
-export async function getpairsViaGraph() {
-  let pairsCount = 1;
-  let page = 0;
-  let pageSize = 500;
-
-  while (pairsCount !== 0) {
-    let { data } = await getV2Pairs(pageSize, page * pageSize);
-    console.log("Page: ", page, "Fetched : ", data.pairs.length);
-    pairsCount = data.pairs.length;
-
-    if (pairsCount !== 0) {
-      console.log(`PAGE: ${page}  ADD JOBS IN QUEE`);
-      data.pairs.map((pair: any) => {
-        DB_QUEE.add({ pair });
-      });
-    }
-    // pairsCount = 0; // using for stop
-    page += 1;
-  }
-}
 
 export async function pairCreatedEvents(_startBlock: number, _size: number, _page: number) {
   console.log("POOL CREATED EVENTS ... ");
@@ -117,7 +95,7 @@ DB_QUEE.process(QUEE_CONCURRENCY, async (job: any, done: any) => {
 
   let token0Symbol = await getTokenSymbol(token0);
   let token1Symbol = await getTokenSymbol(token1);
-  await storePair(EXCHNAGE_NAME, token0, token1, token0Symbol, token1Symbol, pool);
+  await storePair(EXCHNAGE_NAME, token0, token1, token0Symbol, token1Symbol, pool, fee);
 
   done(null, job);
 });
