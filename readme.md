@@ -1,3 +1,21 @@
+### AVALANCE DEXES
+
+- Avalanche DEXes:
+
+- https://traderjoexyz.com/
+  Factory: https://snowtrace.io/address/0x9ad6c38be94206ca50bb0d90783181662f0cfa10#code
+  StartBlock: 2486392
+
+  https://app.pangolin.exchange/
+  PangolinFactory: https://snowtrace.io/address/0xefa94DE7a4656D787667C749f7E1223D71E9FD88#code
+
+  https://exchange.yetiswap.app/
+  https://app.elk.finance/
+  https://avax.olive.cash/
+  https://app.baguette.exchange/
+  https://app.partyswap.io/
+  https://app.canary.exchange/
+
 ### Uniswap
 
 - RIUN CLI
@@ -5,17 +23,9 @@
 
 ```bash
 
-   //-- uniswap_v2
-  ./build/pairCreatedEvents.js --from 10000835 --size 1000000 --page 1 --concurency 300
+   //-- TraderJo DEX
+  ./build/pairCreatedEvents.js --from 2486392 --size 100000 --page 1 --concurency 300
   ./src/pairCreatedEvents.ts --from 10000835 --size 1000000 --page 1 --concurency 300
-
-  //-- uniswap_v3
-  ./build/poolCreateEventV3.js --from 12369621  --size 1000000 --page 1 --concurency 300
-  ./src/poolCreateEventV3.ts --from 12369621  --size 1000000 --page 1 --concurency 300
-
-  //-- sushiswap
-  ./build/pairCreateEventSushi.js --from 10794229  --size 1000000 --page 1 --concurency 300
-  ./src/pairCreateEventSushi.ts --from 10794229  --size 1000000 --page 1 --concurency 300
 
 ```
 
@@ -39,3 +49,37 @@ Thanks to some fancy footwork in the factory, we can also compute pair addresses
 -- Subgraphs
 https://github.com/Uniswap/v2-subgraph
 https://github.com/Uniswap/v3-subgraph
+
+**##** **Working With Redis CLient**
+
+**install**
+
+```
+npm install --global rdcli
+```
+
+_Connecting Redis viaCLI_
+
+```
+rdcli -h localhost
+```
+
+**Redis CLI Commands**
+
+_List all keys_
+
+```
+KEYS *
+```
+
+_search keys_
+
+```
+KEYS keys bull:cronjobs:*
+```
+
+_Clear FLUSH Database_
+
+```
+FLUSHHALL
+```

@@ -18,7 +18,7 @@ export const storePair = async (
   fee: number
 ) => {
   const sql = `
-        insert into pairs (exchange_name,token0,token1,token0_symbol,token1_symbol, pair, fee)
+        insert into pairs_awax (exchange_name,token0,token1,token0_symbol,token1_symbol, pair, fee)
                 values ($1,$2,$3,$4,$5,$6,$7);
   `;
   const data = [exchangeName, token0, token1, token0Symbol, token1Symbol, pair, fee];
@@ -36,11 +36,10 @@ export const storePair = async (
  * @param exchangeRate
  */
 
-export const getPairsByExchange = async (exchangeName: string): Promise<any[]> => {
-  const sql = `select * from pairs where exchange_name = $1;`;
-  const data = [exchangeName];
+export const getPairsByExchange = async (): Promise<any[]> => {
+  const sql = `select * from pairs_awax where id > 9500`;
   try {
-    let result = await pool.query(sql, data);
+    let result = await pool.query(sql, []);
     return result.rows;
   } catch (err) {
     console.log(err);
@@ -49,8 +48,9 @@ export const getPairsByExchange = async (exchangeName: string): Promise<any[]> =
 };
 
 // BAD SOLUTION TEMPORARY
-export const updateUniswapPairInfo = async (uniswapPairAddress: string, pairAddress: string) => {
-  const sql = `update pairs set uniswap_v2 = $1 where pair = $2;`;
+export const updateUniswapPairInfo = async (uniswapPairAddress: string, pairAddress: string, rowName: string) => {
+  const sql = `update pairs_awax set ${rowName} = $1 where pair = $2;`;
+  // console.log("Sql : ", sql);
   const data = [uniswapPairAddress, pairAddress];
   try {
     await pool.query(sql, data);
@@ -60,11 +60,11 @@ export const updateUniswapPairInfo = async (uniswapPairAddress: string, pairAddr
 };
 
 export const updateSushiswapPairInfo = async (sushiswapPaiAddress: string, pairAddress: string) => {
-  const sql = `update pairs set sushiswap_v2 = $1 where pair = $2;`;
-  const data = [sushiswapPaiAddress, pairAddress];
-  try {
-    await pool.query(sql, data);
-  } catch (err) {
-    console.log(err);
-  }
+  // const sql = `update pairs_awax set sushiswap_v2 = $1 where pair = $2;`;
+  // const data = [sushiswapPaiAddress, pairAddress];
+  // try {
+  //   await pool.query(sql, data);
+  // } catch (err) {
+  //   console.log(err);
+  // }
 };

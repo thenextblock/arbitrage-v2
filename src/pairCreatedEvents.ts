@@ -1,8 +1,7 @@
 require("dotenv").config();
 import { utils, ethers, BigNumber, Signer } from "ethers";
-import { formatUnits, parseUnits } from "ethers/lib/utils";
+// import { formatUnits, parseUnits } from "ethers/lib/utils";
 import { UniswapV2FactoryAbi__factory, ERC20Abi__factory } from "./types";
-import { getV2Pairs } from "./graph/uniswapv2grap";
 import { storePair } from "./db";
 import * as _ from "lodash";
 import Queue from "bull";
@@ -17,66 +16,38 @@ args
 
 const DB_QUEE = new Queue("db");
 const RPC_HOST = process.env.RPC_HTTP || "";
-// const RPC_WS = process.env.RPC_WS || "";
-
-const EXCHNAGE_NAME = "Uniswap_V2";
-const UNISWAP_V2_FACTORY_ADDRESS = "0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f"; // uniswap v2
-
 const provider = new ethers.providers.JsonRpcProvider(RPC_HOST);
-// const wsProvider = new ethers.providers.WebSocketProvider(RPC_WS);
+
+const EXCHNAGE_NAME = "traderjoexyz";
+let UNISWAP_V2_FACTORY_ADDRESS = "0x9ad6c38be94206ca50bb0d90783181662f0cfa10"; // uniswap v2
 
 let QUEE_CONCURRENCY = 500;
 
 (async () => {
   console.log("RPC: ", RPC_HOST);
-  DB_QUEE.empty();
-  const flags = args.parse(process.argv);
-  const { from, size, page, concurency } = flags;
-  QUEE_CONCURRENCY = concurency;
-
-  if (!from) {
-    console.log(`Please provide Starting Block`.red);
-    return;
-  }
-
-  if (!page) {
-    console.log(`Please provide  Page Number -P`.red);
-    return;
-  }
-
-  console.log("-".repeat(80).gray);
-  console.log(`PROCESS -> From ${from}, Size: ${size} Page: ${page}, Concurency: ${concurency} `.green);
-  console.log("-".repeat(80).gray);
-
-  await queeMonitor(DB_QUEE);
-  // console.log("Ethers: ", utils.toUtf8String("0x4156540000000000000000000000000000000000000000000000000000000000"));
-  await pairCreatedEvents(from, size, page - 1);
+  // DB_QUEE.empty();
+  // const flags = args.parse(process.argv);
+  // const { from, size, page, concurency } = flags;
+  // QUEE_CONCURRENCY = concurency;
+  // if (!from) {
+  //   console.log(`Please provide Starting Block`.red);
+  //   return;
+  // }
+  // if (!page) {
+  //   console.log(`Please provide  Page Number -P`.red);
+  //   return;
+  // }
+  // console.log("-".repeat(80).gray);
+  // console.log(`PROCESS -> From ${from}, Size: ${size} Page: ${page}, Concurency: ${concurency} `.green);
+  // console.log("-".repeat(80).gray);
+  // await queeMonitor(DB_QUEE);
+  // // console.log("Ethers: ", utils.toUtf8String("0x4156540000000000000000000000000000000000000000000000000000000000"));
+  // await pairCreatedEvents(from, size, page - 1);
 })();
 
-export async function getpairsViaGraph() {
-  let pairsCount = 1;
-  let page = 0;
-  let pageSize = 500;
-
-  while (pairsCount !== 0) {
-    let { data } = await getV2Pairs(pageSize, page * pageSize);
-    console.log("Page: ", page, "Fetched : ", data.pairs.length);
-    pairsCount = data.pairs.length;
-
-    if (pairsCount !== 0) {
-      console.log(`PAGE: ${page}  ADD JOBS IN QUEE`);
-      data.pairs.map((pair: any) => {
-        DB_QUEE.add({ pair });
-      });
-    }
-    // pairsCount = 0; // using for stop
-    page += 1;
-  }
-}
-
-export async function pairCreatedEvents(_startBlock: number, _size: number, _page: number) {
+export async function pairCreatedEvents(factoryAddress: string, _startBlock: number, _size: number, _page: number) {
   console.log("PAIR CREATED EVENTS ... ");
-  const uniswapFactory = UniswapV2FactoryAbi__factory.connect(UNISWAP_V2_FACTORY_ADDRESS, provider);
+  const uniswapFactory = UniswapV2FactoryAbi__factory.connect(factoryAddress, provider);
   let eventFilter = uniswapFactory.filters.PairCreated();
 
   //TODO : Optimize this shitty Code here
@@ -113,13 +84,6 @@ async function getTokenSymbol(_token: string): Promise<string> {
 }
 
 DB_QUEE.process(QUEE_CONCURRENCY, async (job: any, done: any) => {
-  //   console.log(job.data);
-  //   console.log("------------------------");
-  // let { pair } = job.data;
-  // let { id: pairAddress } = pair;
-  // let { token0, token1 } = pair;
-  // await storePair(EXCHNAGE_NAME, token0.id, token1.id, token0.symbol, token1.symbol, pairAddress);
-
   const { token0, token1, pair } = job.data;
   console.log(token0, token1, pair);
   console.log("---------------------");
