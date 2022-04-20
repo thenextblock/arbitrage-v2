@@ -2,7 +2,7 @@ require("dotenv").config();
 import { utils, ethers, BigNumber, Signer } from "ethers";
 import { formatUnits, parseUnits, poll } from "ethers/lib/utils";
 import { UniswapV3FactoryAbi__factory, UniswapV2FactoryAbi__factory, ERC20Abi__factory } from "./types";
-import { getPairsByExchange, updateUniswapPairInfo, updateSushiswapPairInfo } from "./db";
+import { getPairsByExchange, updateUniswapPairInfo } from "./db";
 import * as _ from "lodash";
 import Queue from "bull";
 import args from "args";
