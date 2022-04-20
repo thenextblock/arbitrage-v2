@@ -37,7 +37,7 @@ export const storePair = async (
  */
 
 export const getPairsByExchange = async (): Promise<any[]> => {
-  const sql = `select * from pairs_awax where id > 9500`;
+  const sql = `select * from pairs_awax where pangolin != '0x0000000000000000000000000000000000000000';`;
   try {
     let result = await pool.query(sql, []);
     return result.rows;
@@ -47,7 +47,6 @@ export const getPairsByExchange = async (): Promise<any[]> => {
   }
 };
 
-// BAD SOLUTION TEMPORARY
 export const updateUniswapPairInfo = async (uniswapPairAddress: string, pairAddress: string, rowName: string) => {
   const sql = `update pairs_awax set ${rowName} = $1 where pair = $2;`;
   // console.log("Sql : ", sql);
@@ -59,12 +58,15 @@ export const updateUniswapPairInfo = async (uniswapPairAddress: string, pairAddr
   }
 };
 
-export const updateSushiswapPairInfo = async (sushiswapPaiAddress: string, pairAddress: string) => {
-  // const sql = `update pairs_awax set sushiswap_v2 = $1 where pair = $2;`;
-  // const data = [sushiswapPaiAddress, pairAddress];
-  // try {
-  //   await pool.query(sql, data);
-  // } catch (err) {
-  //   console.log(err);
-  // }
+export const updateDecimalsInDatabase = async (token0Decimals: string, token1Decimals: string, pairAddress: string) => {
+  const sql = `update pairs_awax set 
+                    toke0_decimals = $1 , toke1_decimals = $2 
+                            where pair  = $3;`;
+
+  const data = [token0Decimals, token1Decimals, pairAddress];
+  try {
+    await pool.query(sql, data);
+  } catch (err) {
+    console.log(err);
+  }
 };

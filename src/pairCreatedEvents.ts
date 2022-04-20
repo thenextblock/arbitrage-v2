@@ -8,41 +8,15 @@ import Queue from "bull";
 import args from "args";
 import "colors";
 
-args
-  .option("from", "Starting Block")
-  .option("size", "paging size", 500000)
-  .option("page", "page", 0)
-  .option("concurency", "how many paralelt Procces you need", 488);
-
 const DB_QUEE = new Queue("db");
 const RPC_HOST = process.env.RPC_HTTP || "";
 const provider = new ethers.providers.JsonRpcProvider(RPC_HOST);
 
 const EXCHNAGE_NAME = "traderjoexyz";
-let UNISWAP_V2_FACTORY_ADDRESS = "0x9ad6c38be94206ca50bb0d90783181662f0cfa10"; // uniswap v2
-
 let QUEE_CONCURRENCY = 500;
 
 (async () => {
   console.log("RPC: ", RPC_HOST);
-  // DB_QUEE.empty();
-  // const flags = args.parse(process.argv);
-  // const { from, size, page, concurency } = flags;
-  // QUEE_CONCURRENCY = concurency;
-  // if (!from) {
-  //   console.log(`Please provide Starting Block`.red);
-  //   return;
-  // }
-  // if (!page) {
-  //   console.log(`Please provide  Page Number -P`.red);
-  //   return;
-  // }
-  // console.log("-".repeat(80).gray);
-  // console.log(`PROCESS -> From ${from}, Size: ${size} Page: ${page}, Concurency: ${concurency} `.green);
-  // console.log("-".repeat(80).gray);
-  // await queeMonitor(DB_QUEE);
-  // // console.log("Ethers: ", utils.toUtf8String("0x4156540000000000000000000000000000000000000000000000000000000000"));
-  // await pairCreatedEvents(from, size, page - 1);
 })();
 
 export async function pairCreatedEvents(factoryAddress: string, _startBlock: number, _size: number, _page: number) {

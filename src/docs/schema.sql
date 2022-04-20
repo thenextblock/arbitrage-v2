@@ -33,6 +33,9 @@ alter table pairs_awax owner to postgres;
 alter table pairs_awax
 	add pangolin varchar(43) default '0x0000000000000000000000000000000000000000';
 
+alter table pairs_awax add toke0_decimals integer
+alter table pairs_awax add toke1_decimals integer
+
 
 
 -- alter table pairs

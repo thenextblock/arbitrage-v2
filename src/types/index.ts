@@ -3,8 +3,10 @@
 /* eslint-disable */
 export type { ERC20Abi } from "./ERC20Abi";
 export type { UniswapV2FactoryAbi } from "./UniswapV2FactoryAbi";
+export type { UniswapV2PairAbi } from "./UniswapV2PairAbi";
 export type { UniswapV3FactoryAbi } from "./UniswapV3FactoryAbi";
 export * as factories from "./factories";
 export { ERC20Abi__factory } from "./factories/ERC20Abi__factory";
 export { UniswapV2FactoryAbi__factory } from "./factories/UniswapV2FactoryAbi__factory";
+export { UniswapV2PairAbi__factory } from "./factories/UniswapV2PairAbi__factory";
 export { UniswapV3FactoryAbi__factory } from "./factories/UniswapV3FactoryAbi__factory";
