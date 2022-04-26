@@ -61,7 +61,7 @@ npm install --global rdcli
 _Connecting Redis viaCLI_
 
 ```
-rdcli -h localhost
+  rdcli -h localhost
 ```
 
 **Redis CLI Commands**

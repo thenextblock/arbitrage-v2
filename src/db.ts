@@ -38,6 +38,7 @@ export const storePair = async (
 
 export const getPairsByExchange = async (): Promise<any[]> => {
   const sql = `select * from pairs_awax where pangolin != '0x0000000000000000000000000000000000000000';`;
+  // const sql = `select * from pairs_awax where pangolin != '0x0000000000000000000000000000000000000000' limit 10;`;
   try {
     let result = await pool.query(sql, []);
     return result.rows;
