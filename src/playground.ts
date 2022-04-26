@@ -1,5 +1,5 @@
-import data from "../data.json";
-console.log(data.length);
+// import data from "../data.json";
+// console.log(data.length);
 
 // function* generator() {
 //   yield 1;
