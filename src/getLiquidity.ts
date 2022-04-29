@@ -9,7 +9,7 @@ import "colors";
 
 const RPC_HOST = process.env.RPC_HTTP || "";
 const provider = new ethers.providers.JsonRpcProvider(RPC_HOST);
-let QUEE_CONCURRENCY = 200;
+let QUEE_CONCURRENCY = 175;
 
 interface IRESERVEDATAITEM {
   _reserve0: BigNumber;
@@ -111,16 +111,16 @@ GET_LIQUDITY.process(QUEE_CONCURRENCY, async (job: any, done: any) => {
       tokenAddress2: token1,
       tokenName1: token0_symbol,
       tokenName2: token1_symbol,
-      Reserves1: formatUnits(pair1_result._reserve0, token0_decimals),
-      Reserves2: formatUnits(pair1_result._reserve1, token1_decimals),
+      Reserves1: parseFloat(parseFloat(formatUnits(pair1_result._reserve0, token0_decimals)).toFixed(4)),
+      Reserves2: parseFloat(parseFloat(formatUnits(pair1_result._reserve1, token1_decimals)).toFixed(4)),
     },
     [pair2]: {
       tokenAddress1: token0,
       tokenAddress2: token1,
       tokenName1: token0_symbol,
       tokenName2: token1_symbol,
-      Reserves1: formatUnits(pair2_result._reserve0, token0_decimals),
-      Reserves2: formatUnits(pair2_result._reserve1, token1_decimals),
+      Reserves1: parseFloat(parseFloat(formatUnits(pair2_result._reserve0, token0_decimals)).toFixed(4)),
+      Reserves2: parseFloat(parseFloat(formatUnits(pair2_result._reserve1, token1_decimals)).toFixed(4)),
     },
   };
 
